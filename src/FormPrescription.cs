@@ -46,6 +46,9 @@ namespace Kiosk
 
         }
 
+        private void picTemplate_Load(object sender, EventArgs e)
+        {
 
+        }
     }
 }
