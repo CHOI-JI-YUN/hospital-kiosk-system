@@ -23,4 +23,10 @@
     </EmbeddedResource>
   </ItemGroup>
 
+  <ItemGroup>
+    <EmbeddedResource Include="카카오페이.png" />
+    <EmbeddedResource Include="네이버페이.png" />
+    <EmbeddedResource Include="신용카드.png" />
+  </ItemGroup>
+
 </Project>

@@ -137,7 +137,7 @@
             tabWaitCall.Location = new Point(4, 27);
             tabWaitCall.Name = "tabWaitCall";
             tabWaitCall.Padding = new Padding(3);
-            tabWaitCall.Size = new Size(542, 665);
+            tabWaitCall.Size = new Size(552, 675);
             tabWaitCall.TabIndex = 1;
             tabWaitCall.Text = "대기 / 호출";
             tabWaitCall.Click += tabWaitCall_Click;
@@ -269,7 +269,7 @@
             tabRegister.Location = new Point(4, 27);
             tabRegister.Name = "tabRegister";
             tabRegister.Padding = new Padding(3);
-            tabRegister.Size = new Size(542, 665);
+            tabRegister.Size = new Size(552, 675);
             tabRegister.TabIndex = 0;
             tabRegister.Text = "접수";
             // 
@@ -631,7 +631,7 @@
             TabPage.Location = new Point(0, 0);
             TabPage.Name = "TabPage";
             TabPage.SelectedIndex = 0;
-            TabPage.Size = new Size(550, 696);
+            TabPage.Size = new Size(560, 706);
             TabPage.SizeMode = TabSizeMode.Fixed;
             TabPage.TabIndex = 0;
             // 
@@ -654,7 +654,7 @@
             tabHome.Controls.Add(lbHomeBig);
             tabHome.Location = new Point(4, 27);
             tabHome.Name = "tabHome";
-            tabHome.Size = new Size(542, 665);
+            tabHome.Size = new Size(552, 675);
             tabHome.TabIndex = 2;
             tabHome.Text = "홈";
             // 
@@ -802,7 +802,7 @@
             tabPay.Location = new Point(4, 27);
             tabPay.Name = "tabPay";
             tabPay.Padding = new Padding(3);
-            tabPay.Size = new Size(542, 665);
+            tabPay.Size = new Size(552, 675);
             tabPay.TabIndex = 3;
             tabPay.Text = "수납";
             // 
@@ -903,7 +903,7 @@
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             AutoSize = true;
-            ClientSize = new Size(550, 696);
+            ClientSize = new Size(560, 706);
             Controls.Add(TabPage);
             Name = "tabMain";
             StartPosition = FormStartPosition.Manual;

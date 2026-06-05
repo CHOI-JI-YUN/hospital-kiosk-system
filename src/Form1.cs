@@ -257,7 +257,15 @@ namespace Kiosk
             {
                 HeaderText = "시간",
                 DataPropertyName = "Time",
-                FillWeight = 30
+                FillWeight = 25,
+                DefaultCellStyle = new DataGridViewCellStyle { Format = "HH:mm" }
+            });
+
+            dgvWait.Columns.Add(new DataGridViewTextBoxColumn
+            {
+                HeaderText = "상태",
+                DataPropertyName = "Status",
+                FillWeight = 12
             });
 
             dgvWait.DataSource = waitList;
@@ -295,7 +303,8 @@ namespace Kiosk
             {
                 HeaderText = "시간",
                 DataPropertyName = "Time",
-                FillWeight = 40
+                FillWeight = 40,
+                DefaultCellStyle = new DataGridViewCellStyle { Format = "HH:mm" }
             });
 
             // ===== 바인딩 =====
@@ -420,7 +429,8 @@ namespace Kiosk
 
         private void UpdateWaitCallUI()
         {
-            lblWaitTotal.Text = $"전체 대기 : {waitList.Count}명";
+            int waitingCount = waitList.Count(w => w.Status == "대기");
+            lblWaitTotal.Text = $"전체 대기 : {waitingCount}명";
             lblNowCalling.Text = currentCallMessage;
         }
 
@@ -471,19 +481,19 @@ namespace Kiosk
         {
             if (!isPatientVerified)
             {
-                MessageBox.Show("먼저 신규 접수 또는 기존 조회를 완료하세요.");
+                KioskMessageBox.Show(this, "먼저 신규 접수 또는 기존 조회를 완료하세요.");
                 return;
             }
 
             if (!rdoAgreeYes.Checked && !rdoAgreeNo.Checked)
             {
-                MessageBox.Show("개인정보 수집·이용 동의 여부를 선택하세요.");
+                KioskMessageBox.Show(this, "개인정보 수집·이용 동의 여부를 선택하세요.");
                 return;
             }
 
             if (rdoAgreeNo.Checked)
             {
-                MessageBox.Show("개인정보 수집·이용에 동의해야 접수가 가능합니다.");
+                KioskMessageBox.Show(this, "개인정보 수집·이용에 동의해야 접수가 가능합니다.");
                 return;
             }
 
@@ -494,7 +504,7 @@ namespace Kiosk
 
             if (selected.Count == 0)
             {
-                MessageBox.Show("증상을 선택하세요.");
+                KioskMessageBox.Show(this, "증상을 선택하세요.");
                 return;
             }
 
@@ -519,7 +529,7 @@ namespace Kiosk
             UpdateHomeWaitCount();
             UpdateWaitCallUI();
 
-            MessageBox.Show("접수 완료!");
+            KioskMessageBox.Show(this, "접수 완료!");
             TabPage.SelectedTab = tabWaitCall;
 
         }
@@ -565,12 +575,12 @@ namespace Kiosk
         {
             if (!rdoAgreeYes.Checked && !rdoAgreeNo.Checked)
             {
-                MessageBox.Show("개인정보 수집·이용 동의 여부를 선택하세요.");
+                KioskMessageBox.Show(this, "개인정보 수집·이용 동의 여부를 선택하세요.");
                 return;
             }
             if (rdoAgreeNo.Checked)
             {
-                MessageBox.Show("개인정보 수집·이용에 동의해야 접수가 가능합니다.");
+                KioskMessageBox.Show(this, "개인정보 수집·이용에 동의해야 접수가 가능합니다.");
                 return;
             }
 
@@ -581,25 +591,25 @@ namespace Kiosk
 
             if (name == "")
             {
-                MessageBox.Show("이름을 입력하세요.");
+                KioskMessageBox.Show(this, "이름을 입력하세요.");
                 txtName.Focus();
                 return;
             }
             if (birth == "")
             {
-                MessageBox.Show("생년월일을 입력하세요.");
+                KioskMessageBox.Show(this, "생년월일을 입력하세요.");
                 txtBirth.Focus();
                 return;
             }
             if (phone == "")
             {
-                MessageBox.Show("전화번호를 입력하세요.");
+                KioskMessageBox.Show(this, "전화번호를 입력하세요.");
                 txtPhone.Focus();
                 return;
             }
             if (addr == "")
             {
-                MessageBox.Show("주소를 입력하세요.");
+                KioskMessageBox.Show(this, "주소를 입력하세요.");
                 txtAddr.Focus();
                 return;
             }
@@ -607,13 +617,13 @@ namespace Kiosk
             var key = (name, birth);
             if (patientDb.ContainsKey(key))
             {
-                MessageBox.Show("이미 등록된 정보가 있습니다. 기존 조회를 이용하세요.");
+                KioskMessageBox.Show(this, "이미 등록된 정보가 있습니다. 기존 조회를 이용하세요.");
                 return;
             }
 
             patientDb[key] = phone;
 
-            MessageBox.Show("접수(등록)되었습니다.");
+            KioskMessageBox.Show(this, "접수(등록)되었습니다.");
 
             isPatientVerified = true;
             verifiedName = name;
@@ -631,17 +641,17 @@ namespace Kiosk
 
             if (name == "" || birth == "")
             {
-                MessageBox.Show("이름과 생년월일을 입력하세요.");
+                KioskMessageBox.Show(this, "이름과 생년월일을 입력하세요.");
                 return;
             }
 
             if (!patientDb.ContainsKey((name, birth)))
             {
-                MessageBox.Show("조회 결과가 없습니다. 신규 등록을 해주세요.");
+                KioskMessageBox.Show(this, "조회 결과가 없습니다. 신규 등록을 해주세요.");
                 return;
             }
 
-            MessageBox.Show("조회되었습니다.");
+            KioskMessageBox.Show(this, "조회되었습니다.");
 
             isPatientVerified = true;
             verifiedName = name;
@@ -655,24 +665,52 @@ namespace Kiosk
         {
             if (dgvWait.CurrentRow == null)
             {
-                MessageBox.Show("호출할 환자를 선택하세요.");
+                KioskMessageBox.Show(this, "호출할 환자를 선택하세요.");
                 return;
             }
 
             var item = dgvWait.CurrentRow.DataBoundItem as WaitItem;
             if (item == null) return;
 
+            if (item.Status == "진료중")
+            {
+                KioskMessageBox.Show(this, "이미 진료중인 환자입니다.");
+                return;
+            }
+
+            // 현재 진료중인 환자가 있으면 막기
+            if (currentCalling != null)
+            {
+                KioskMessageBox.Show(this, "현재 진료중인 환자가 있습니다.\n먼저 [진료 완료]를 진행하세요.");
+                return;
+            }
+
             //현재 진료중(호출된) 환자 저장
             currentCalling = item;
 
+            // 상태를 "진료중"으로 변경
+            item.Status = "진료중";
+
             // 팝업: 들어오세요
-            MessageBox.Show($"{item.Name}님 / {item.Room}번 진료실로 들어오세요!");
+            KioskMessageBox.Show(this, $"{item.Name}님 / {item.Room}번 진료실로 들어오세요!");
 
             // 아래 상태: 진료중 (유지)
             currentCallMessage = $"{item.Name}님 / {item.Room}번 진료실 - 진료중";
 
-            // 호출하면 목록에서 제거
-            waitList.Remove(item);
+            // DataGridView 갱신 (상태 컬럼 반영)
+            dgvWait.Refresh();
+
+            // "진료중" 행 색상 변경
+            foreach (DataGridViewRow row in dgvWait.Rows)
+            {
+                var w = row.DataBoundItem as WaitItem;
+                if (w != null && w.Status == "진료중")
+                {
+                    row.DefaultCellStyle.BackColor = Color.FromArgb(255, 255, 200);
+                    row.DefaultCellStyle.ForeColor = Color.OrangeRed;
+                    row.DefaultCellStyle.Font = new Font("맑은 고딕", 9, FontStyle.Bold);
+                }
+            }
 
             // UI 갱신
             UpdateHomeWaitCount();
@@ -725,13 +763,16 @@ namespace Kiosk
         {
             if (currentCalling == null)
             {
-                MessageBox.Show("먼저 [호출]을 진행하세요.");
+                KioskMessageBox.Show(this, "먼저 [호출]을 진행하세요.");
                 return;
             }
 
             var item = currentCalling;
 
-            MessageBox.Show($"{item.Name}님 진료 완료되었습니다.");
+            KioskMessageBox.Show(this, $"{item.Name}님 진료 완료되었습니다.");
+
+            // 대기 목록에서 제거
+            waitList.Remove(item);
 
             if (!payList.Contains(item))
                 payList.Add(item);
@@ -740,7 +781,7 @@ namespace Kiosk
             UpdateHomePayCount();
             UpdatePayCount();
 
-            MessageBox.Show($"{item.Name}님 수납 대기입니다.");
+            KioskMessageBox.Show(this, $"{item.Name}님 수납 대기입니다.");
 
             currentCalling = null;
             currentCallMessage = "현재 호출: -";
@@ -753,13 +794,13 @@ namespace Kiosk
         {
             if (!rdoAgreeYes.Checked && !rdoAgreeNo.Checked)
             {
-                MessageBox.Show("개인정보 수집·이용 동의 여부를 선택하세요.");
+                KioskMessageBox.Show(this, "개인정보 수집·이용 동의 여부를 선택하세요.");
                 return false;
             }
 
             if (rdoAgreeNo.Checked)
             {
-                MessageBox.Show("개인정보 수집·이용에 동의해야 접수가 가능합니다.");
+                KioskMessageBox.Show(this, "개인정보 수집·이용에 동의해야 접수가 가능합니다.");
                 return false;
             }
 
@@ -768,17 +809,75 @@ namespace Kiosk
 
         private void btnPrescription_Click(object sender, EventArgs e)
         {
-            if (currentCalling == null)
+            WaitItem target = null;
+
+            if (payList.Count > 0)
             {
-                MessageBox.Show("먼저 [호출]을 진행하세요.");
+                // 수납 대기 목록에서 선택
+                var selectForm = new Form
+                {
+                    Text = "처방전 발급 - 환자 선택",
+                    Size = new Size(350, 300),
+                    StartPosition = FormStartPosition.CenterParent,
+                    FormBorderStyle = FormBorderStyle.FixedDialog,
+                    MaximizeBox = false,
+                    MinimizeBox = false,
+                    BackColor = Color.White
+                };
+
+                var lbl = new Label
+                {
+                    Text = "처방전을 발급할 환자를 선택하세요.",
+                    Font = new Font("맑은 고딕", 10, FontStyle.Bold),
+                    Location = new Point(15, 15),
+                    AutoSize = true
+                };
+                selectForm.Controls.Add(lbl);
+
+                var listBox = new ListBox
+                {
+                    Location = new Point(15, 45),
+                    Size = new Size(300, 150),
+                    Font = new Font("맑은 고딕", 10)
+                };
+
+                foreach (var p in payList)
+                    listBox.Items.Add($"{p.Number}번 - {p.Name} ({p.Dept})");
+
+                selectForm.Controls.Add(listBox);
+
+                var btnOk = new Button
+                {
+                    Text = "선택",
+                    Location = new Point(130, 210),
+                    Size = new Size(80, 30),
+                    Font = new Font("맑은 고딕", 9, FontStyle.Bold),
+                    DialogResult = DialogResult.OK
+                };
+                selectForm.Controls.Add(btnOk);
+                selectForm.AcceptButton = btnOk;
+
+                if (listBox.Items.Count > 0) listBox.SelectedIndex = 0;
+
+                if (selectForm.ShowDialog(this) == DialogResult.OK && listBox.SelectedIndex >= 0)
+                {
+                    target = payList[listBox.SelectedIndex];
+                }
+                selectForm.Dispose();
+            }
+            else
+            {
+                KioskMessageBox.Show(this, "처방전을 발급할 환자가 없습니다.\n먼저 [호출] 후 [진료 완료]를 진행하세요.");
                 return;
             }
 
+            if (target == null) return;
+
             string phone = "-";
-            if (patientDb.TryGetValue((currentCalling.Name, currentCalling.Birth), out string foundPhone))
+            if (patientDb.TryGetValue((target.Name, target.Birth), out string foundPhone))
                 phone = foundPhone;
 
-            var selectedSymptoms = currentCalling.Symptoms
+            var selectedSymptoms = target.Symptoms
                 .Split(',')
                 .Select(s => s.Trim());
 
@@ -794,23 +893,9 @@ namespace Kiosk
                 medicines.Count > 0 ? string.Join(", ", medicines.Distinct()) : "일반 진통제";
 
             var frm = new picTemplate();
-            frm.Fill(currentCalling, phone, medicineText);
-            frm.ShowDialog();
-
-            //중복 방지
-            if (!payList.Contains(currentCalling))
-                payList.Add(currentCalling);
-
-            //수납 목록/대기인원 즉시 갱신 (이게 핵심)
-            paySource.ResetBindings(false);
-            UpdateHomePayCount();
-            UpdatePayCount();
-
-            MessageBox.Show($"{currentCalling.Name}님 수납 대기입니다.");
-
-            currentCalling = null;
-            currentCallMessage = "현재 호출: -";
-            UpdateWaitCallUI();
+            frm.Fill(target, phone, medicineText);
+            frm.StartPosition = FormStartPosition.CenterParent;
+            frm.ShowDialog(this);
         }
 
         private void Form1_Shown(object sender, EventArgs e)
@@ -858,7 +943,47 @@ namespace Kiosk
 
         private void button1_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("결제 시스템 점검 중입니다.\n직원에게 문의하거나 창구에서 결제해주세요.", "안내", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            if (dgvPay.CurrentRow == null || dgvPay.CurrentRow.Index < 0)
+            {
+                KioskMessageBox.Show(this, "결제할 환자를 선택하세요.", "안내", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            var item = dgvPay.CurrentRow.DataBoundItem as WaitItem;
+            if (item == null) return;
+
+            // 진료비 계산
+            int fee = deptFee.ContainsKey(item.Dept) ? deptFee[item.Dept] : 15000;
+
+            // 결제 폼 열기
+            var payForm = new FormPayment(item.Name, item.Dept, fee);
+            var result = payForm.ShowDialog(this);
+
+            if (result == DialogResult.OK && payForm.PaymentCompleted)
+            {
+                // 현금이 아닐 때만 영수증 출력 여부 확인
+                if (payForm.SelectedMethod != "현금")
+                {
+                    var receiptResult = KioskMessageBox.Show(
+                        this,
+                        "결제가 완료되었습니다.\n영수증을 출력하시겠습니까?",
+                        "영수증 출력",
+                        MessageBoxButtons.YesNo,
+                        MessageBoxIcon.Question);
+
+                    if (receiptResult == DialogResult.Yes)
+                    {
+                        var receiptForm = new FormReceipt(item.Name, item.Dept, fee, payForm.SelectedMethod);
+                        receiptForm.ShowDialog(this);
+                    }
+                }
+
+                // 수납 목록에서 제거
+                payList.Remove(item);
+                paySource.ResetBindings(false);
+                UpdateHomePayCount();
+                UpdatePayCount();
+            }
         }
 
         private void btnReset_Click(object sender, EventArgs e)

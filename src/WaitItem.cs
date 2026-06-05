@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System;
 
 namespace Kiosk
 {
@@ -15,5 +11,6 @@ namespace Kiosk
         public string Birth { get; set; } = "";  // 생년월일
         public string Symptoms { get; set; } = "";
         public DateTime Time { get; set; }       // 접수시간
+        public string Status { get; set; } = "대기";  // 대기 / 진료중
     }
 }
